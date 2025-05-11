@@ -2,63 +2,80 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Liquidity Pool Ratio Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>veBAL Calculator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #0b0c10;
-      color: #c5c6c7;
-      text-align: center;
-      padding: 2rem;
+      background-color: #0f0f1a;
+      color: #00ffe7;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
     }
-    input {
-      padding: 0.5rem;
-      margin: 0.5rem;
-      font-size: 1rem;
+    input, select {
+      margin-bottom: 10px;
+      padding: 8px;
+      width: 100%;
+      background: #1a1a2e;
+      color: #00ffe7;
+      border: 1px solid #00ffe7;
     }
     button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      background-color: #45a29e;
-      color: white;
+      background-color: #00ffe7;
+      color: #0f0f1a;
+      padding: 10px;
       border: none;
-      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
     }
-    .result {
-      margin-top: 1rem;
-      font-size: 1.2rem;
-      color: #66fcf1;
+    .output {
+      margin-top: 20px;
+      background: #1a1a2e;
+      padding: 15px;
     }
   </style>
 </head>
 <body>
-  <h1>Balancer LP Calculator (70% DVC / 20% USDT / 10% ETH)</h1>
-  <p>Masukkan bilangan DEVCOIN & harga 1 DEVCOIN:</p>
-  <input type="number" id="dvcAmount" placeholder="Contoh: 100" />
-  <input type="number" id="dvcPrice" placeholder="Harga 1 DVC (Contoh: 0.20)" step="0.01" />
-  <button onclick="calculateLP()">Kira</button>
-  <div class="result" id="result"></div>
+  <h1>veBAL Earn Calculator</h1>
+  <label>Jumlah DEVCOIN:</label>
+  <input type="number" id="dvcInput" placeholder="Contoh: 100" />
+
+  <label>Harga 1 DVC (USD):</label>
+  <input type="number" id="dvcPrice" placeholder="Contoh: 0.20" step="0.01" />
+
+  <label>Harga semasa 1 veBAL (USD):</label>
+  <input type="number" id="vebalPrice" placeholder="Contoh: 4.25" step="0.01" />
+
+  <label>Pilih tempoh kunci:</label>
+  <select id="lockPeriod">
+    <option value="1">1 bulan (×1)</option>
+    <option value="2">6 bulan (×2)</option>
+    <option value="4">1 tahun (×4)</option>
+  </select>
+
+  <button onclick="kira()">KIRA veBAL</button>
+
+  <div class="output" id="result"></div>
 
   <script>
-    function calculateLP() {
-      const dvcAmount = parseFloat(document.getElementById("dvcAmount").value);
-      const dvcPrice = parseFloat(document.getElementById("dvcPrice").value);
+    function kira() {
+      const dvc = parseFloat(document.getElementById('dvcInput').value);
+      const price = parseFloat(document.getElementById('dvcPrice').value);
+      const vebalPrice = parseFloat(document.getElementById('vebalPrice').value);
+      const lockFactor = parseFloat(document.getElementById('lockPeriod').value);
 
-      if (isNaN(dvcAmount) || isNaN(dvcPrice)) {
-        document.getElementById("result").innerText = "Sila isi semua ruangan dengan betul.";
+      if (isNaN(dvc) || isNaN(price) || isNaN(vebalPrice)) {
+        document.getElementById('result').innerHTML = "Sila lengkapkan semua medan.";
         return;
       }
 
-      const dvcValue = dvcAmount * dvcPrice; // 70%
-      const totalPool = dvcValue / 0.7;
-      const usdtNeeded = totalPool * 0.2;
-      const ethNeeded = totalPool * 0.1;
+      const totalValue = dvc * price;
+      const usdtRequired = totalValue * 0.25; // Untuk LP 70% DVC, 20% USDT, 10% ETH → USDT = 25% dari nilai DVC
+      const vebalEarned = (totalValue * lockFactor) / vebalPrice;
 
-      document.getElementById("result").innerHTML = `
-        <p><strong>Total Nilai Pool:</strong> $${totalPool.toFixed(2)}</p>
-        <p><strong>USDT Diperlukan (20%):</strong> $${usdtNeeded.toFixed(2)}</p>
-        <p><strong>ETH Diperlukan (10%):</strong> $${ethNeeded.toFixed(2)}</p>
+      document.getElementById('result').innerHTML = `
+        <p><strong>Nilai DEVCOIN:</strong> $${totalValue.toFixed(2)}</p>
+        <p><strong>USDT diperlukan:</strong> $${usdtRequired.toFixed(2)}</p>
+        <p><strong>Anggaran veBAL earned:</strong> ${vebalEarned.toFixed(4)} veBAL</p>
       `;
     }
   </script>
