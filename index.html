@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liquidity Pool Ratio Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0c10;
+      color: #c5c6c7;
+      text-align: center;
+      padding: 2rem;
+    }
+    input {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background-color: #45a29e;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #66fcf1;
+    }
+  </style>
+</head>
+<body>
+  <h1>Balancer LP Calculator (70% DVC / 20% USDT / 10% ETH)</h1>
+  <p>Masukkan bilangan DEVCOIN & harga 1 DEVCOIN:</p>
+  <input type="number" id="dvcAmount" placeholder="Contoh: 100" />
+  <input type="number" id="dvcPrice" placeholder="Harga 1 DVC (Contoh: 0.20)" step="0.01" />
+  <button onclick="calculateLP()">Kira</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    function calculateLP() {
+      const dvcAmount = parseFloat(document.getElementById("dvcAmount").value);
+      const dvcPrice = parseFloat(document.getElementById("dvcPrice").value);
+
+      if (isNaN(dvcAmount) || isNaN(dvcPrice)) {
+        document.getElementById("result").innerText = "Sila isi semua ruangan dengan betul.";
+        return;
+      }
+
+      const dvcValue = dvcAmount * dvcPrice; // 70%
+      const totalPool = dvcValue / 0.7;
+      const usdtNeeded = totalPool * 0.2;
+      const ethNeeded = totalPool * 0.1;
+
+      document.getElementById("result").innerHTML = `
+        <p><strong>Total Nilai Pool:</strong> $${totalPool.toFixed(2)}</p>
+        <p><strong>USDT Diperlukan (20%):</strong> $${usdtNeeded.toFixed(2)}</p>
+        <p><strong>ETH Diperlukan (10%):</strong> $${ethNeeded.toFixed(2)}</p>
+      `;
+    }
+  </script>
+</body>
+</html>
